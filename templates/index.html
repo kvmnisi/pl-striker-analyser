@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PL Striker Value Analyser</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #0d1117;
+            color: #e6edf3;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* --- header --- */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            color: #58a6ff;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #8b949e;
+            font-size: 0.95rem;
+        }
+
+        /* --- search form --- */
+        .search-card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .search-card h2 {
+            font-size: 1rem;
+            color: #8b949e;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            flex: 1;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.85rem;
+            color: #8b949e;
+            margin-bottom: 6px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px 14px;
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            color: #e6edf3;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .input-group input:focus {
+            border-color: #58a6ff;
+        }
+
+        .error-text {
+            color: #f85149;
+            font-size: 0.8rem;
+            margin-top: 4px;
+        }
+
+        .search-btn {
+            width: 100%;
+            padding: 12px;
+            background: #238636;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .search-btn:hover {
+            background: #2ea043;
+        }
+
+        /* --- comparison results --- */
+        .results-card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .results-card h2 {
+            font-size: 1rem;
+            color: #8b949e;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .comparison-table th {
+            padding: 10px 16px;
+            text-align: left;
+            font-size: 0.85rem;
+            color: #8b949e;
+            border-bottom: 1px solid #30363d;
+        }
+
+        .comparison-table th.player-col {
+            color: #58a6ff;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .comparison-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #21262d;
+            font-size: 0.95rem;
+        }
+
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .comparison-table td:first-child {
+            color: #8b949e;
+            font-size: 0.85rem;
+        }
+
+        /* quadrant badge colours */
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .badge-elite       { background: #1a4731; color: #3fb950; }
+        .badge-overpriced  { background: #3d1a1a; color: #f85149; }
+        .badge-hidden-gem  { background: #1a2d4f; color: #58a6ff; }
+        .badge-dead-weight { background: #2d2d2d; color: #8b949e; }
+
+        /* --- plot --- */
+        .plot-card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .plot-card h2 {
+            font-size: 1rem;
+            color: #8b949e;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .plot-card img {
+            width: 100%;
+            border-radius: 8px;
+            border: 1px solid #30363d;
+        }
+
+        /* --- median info --- */
+        .info-row {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+
+        .info-box {
+            flex: 1;
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .info-box .value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #58a6ff;
+        }
+
+        .info-box .label {
+            font-size: 0.8rem;
+            color: #8b949e;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <!-- header -->
+    <div class="header">
+        <h1>⚽ PL Striker Value Analyser</h1>
+        <p>Compare Premier League strikers by G+A per 90 vs weekly wage</p>
+    </div>
+
+    <!-- search form -->
+    <div class="search-card">
+        <h2>Compare Two Players</h2>
+        <form method="POST" action="/compare">
+            <div class="input-row">
+                <div class="input-group">
+                    <label>First Player</label>
+                    <input type="text" name="player1"
+                           placeholder="e.g. Haaland"
+                           value="{{ name1 or '' }}">
+                    {% if errors and errors.player1 %}
+                        <p class="error-text">{{ errors.player1 }}</p>
+                    {% endif %}
+                </div>
+                <div class="input-group">
+                    <label>Second Player</label>
+                    <input type="text" name="player2"
+                           placeholder="e.g. Watkins"
+                           value="{{ name2 or '' }}">
+                    {% if errors and errors.player2 %}
+                        <p class="error-text">{{ errors.player2 }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            <button type="submit" class="search-btn">Compare Players</button>
+        </form>
+    </div>
+
+    {% if comparison %}
+
+    <!-- stat boxes -->
+    <div class="info-row">
+        <div class="info-box">
+            <div class="value">{{ comparison.player1.wage }}</div>
+            <div class="label">{{ comparison.player1.name }} — Weekly Wage</div>
+        </div>
+        <div class="info-box">
+            <div class="value">{{ comparison.player2.wage }}</div>
+            <div class="label">{{ comparison.player2.name }} — Weekly Wage</div>
+        </div>
+    </div>
+
+    <!-- comparison table -->
+    <div class="results-card">
+        <h2>Head to Head</h2>
+        <table class="comparison-table">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th class="player-col">{{ comparison.player1.name }}</th>
+                    <th class="player-col">{{ comparison.player2.name }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Weekly Wage</td>
+                    <td>{{ comparison.player1.wage }}</td>
+                    <td>{{ comparison.player2.wage }}</td>
+                </tr>
+                <tr>
+                    <td>G+A per 90</td>
+                    <td>{{ comparison.player1.ga_per_90 }}</td>
+                    <td>{{ comparison.player2.ga_per_90 }}</td>
+                </tr>
+                <tr>
+                    <td>Value Rating</td>
+                    <td>
+                        {% set q1 = comparison.player1.quadrant %}
+                        {% if q1 == 'Elite' %}
+                            <span class="badge badge-elite">Elite</span>
+                        {% elif q1 == 'Overpriced' %}
+                            <span class="badge badge-overpriced">Overpriced</span>
+                        {% elif q1 == 'Hidden Gem' %}
+                            <span class="badge badge-hidden-gem">Hidden Gem</span>
+                        {% else %}
+                            <span class="badge badge-dead-weight">Dead Weight</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% set q2 = comparison.player2.quadrant %}
+                        {% if q2 == 'Elite' %}
+                            <span class="badge badge-elite">Elite</span>
+                        {% elif q2 == 'Overpriced' %}
+                            <span class="badge badge-overpriced">Overpriced</span>
+                        {% elif q2 == 'Hidden Gem' %}
+                            <span class="badge badge-hidden-gem">Hidden Gem</span>
+                        {% else %}
+                            <span class="badge badge-dead-weight">Dead Weight</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- plot -->
+    <div class="plot-card">
+        <h2>Visual Comparison</h2>
+        <img src="/static/plots/comparison.png?{{ range(1, 100000) | random }}"
+             alt="Player comparison plot">
+    </div>
+
+    {% endif %}
+
+</div>
+</body>
+</html>

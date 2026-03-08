@@ -1,0 +1,13 @@
+# virtual environment
+ml-env/
+
+# python cache
+__pycache__/
+*.pyc
+
+# generated plots
+static/plots/
+
+# data files (too large for github)
+pl_player_stats.html
+pl_wages.html
