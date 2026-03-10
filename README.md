@@ -6,12 +6,10 @@ A web app that compares Premier League strikers by **Goals + Assists per 90 minu
 vs **weekly wage**, using a perceptron trained from scratch with NumPy to learn 
 the value boundary.
 
-Built as part of COMS 4030A — Adaptive Computation and Machine Learning.
-
 ## What it does
 - Scrapes player stats and wage data from FBref
 - Trains a perceptron (built from scratch, no ML libraries) to classify 
-  strikers as good or bad value
+  strikers as good or bad value using their Goals + Assists per 90 minutes vs their wages.
 - Lets you search and compare any two Premier League strikers
 - Generates a plot showing both players highlighted against the full dataset
 
