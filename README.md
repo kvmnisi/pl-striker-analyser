@@ -41,4 +41,4 @@ http://127.0.0.1:5000
 - Perceptron trained from scratch (no sklearn)
 
 ## Concepts Used
-- Perceptron training algorithm (Lab 1)
+- Perceptron training algorithm
