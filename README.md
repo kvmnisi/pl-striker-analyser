@@ -1,5 +1,7 @@
 # Premier League Striker Value Analyser
 
+![Striker Value Comparison](striker_value_comparison.png)
+
 A web app that compares Premier League strikers by **Goals + Assists per 90 minutes** 
 vs **weekly wage**, using a perceptron trained from scratch with NumPy to learn 
 the value boundary.
